@@ -1,0 +1,6 @@
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:UCSD-E4E/fishsense-frontend.git
+[submodule "account-service"]
+	path = account-service
+	url = git@github.com:UCSD-E4E/fishsense-account-service.git
