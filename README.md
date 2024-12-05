@@ -8,6 +8,7 @@ TODO
 sequenceDiagram
     actor User
 
+    activate User
     activate Frontend
     
     User ->> Frontend: Clicks on Google oauth
@@ -49,4 +50,62 @@ sequenceDiagram
 
     deactivate Backend
     deactivate Frontend
+    deactivate User
+```
+
+## Create Organization
+```mermaid
+sequenceDiagram
+    actor User
+
+    activate User
+    activate Frontend
+
+    User ->> Frontend: Click "Create Organization" button
+    Frontend ->> User: Redirect to create organization form
+    Frontend ->> Frontend: Validate JWT token
+    alt JWT Token Valid
+    User ->> Frontend: Provide Organization information and click submit
+    Frontend ->> Backend: Post form organization information
+    activate Backend
+
+    Backend ->> Backend: Validate JWT token
+    
+    alt JWT Token is Valid
+
+    Backend ->> Database: Create new organization
+    activate Database
+
+    alt Organization name is unique
+
+    Database ->> Backend: Return Organization Information
+    Backend ->> Frontend: Return 200 and Organization Information
+    Frontend ->> User: Redirect to new organization page
+
+    else
+
+    Database->> Backend: Return error indicating that organization is not unique
+    Backend ->> Frontend: Return 400 with message indicating that an oganization with that name already exists
+    Frontend ->> User: Display error to user
+
+    end
+
+    deactivate Database
+
+    else
+    
+    Backend ->> Frontend: Return 401 unauthorized
+    Frontend ->> User: Redirect to login
+
+    end
+
+    deactivate Backend
+    else
+
+    Frontend ->> User: Redirect to login page
+
+    end
+
+    deactivate Frontend
+    deactivate User
 ```
