@@ -109,3 +109,60 @@ sequenceDiagram
     deactivate Frontend
     deactivate User
 ```
+
+## Create User
+```mermaid
+sequenceDiagram
+    actor User
+
+    activate User
+    activate Frontend
+
+    User ->> Frontend: Click "Create User" button
+    Frontend ->> User: Redirect to create organization form
+    Frontend ->> Frontend: Validate JWT token
+    alt JWT Token Valid
+    User ->> Frontend: Provide User information and click submit
+    Frontend ->> Backend: Post form user information
+    activate Backend
+
+    Backend ->> Backend: Validate JWT token
+    
+    alt JWT Token is Valid
+
+    Backend ->> Database: Create new organization
+    activate Database
+
+    alt Email name is unique
+
+    Database ->> Backend: Return User Information
+    Backend ->> Frontend: Return 200 and User Information
+    Frontend ->> User: Redirect to new user page
+
+    else
+
+    Database->> Backend: Return error indicating that email is not unique
+    Backend ->> Frontend: Return 400 with message indicating that an account with that email already exists
+    Frontend ->> User: Display error to user
+
+    end
+
+    deactivate Database
+
+    else
+    
+    Backend ->> Frontend: Return 401 unauthorized
+    Frontend ->> User: Redirect to login
+
+    end
+
+    deactivate Backend
+    else
+
+    Frontend ->> User: Redirect to login page
+
+    end
+
+    deactivate Frontend
+    deactivate User
+```
