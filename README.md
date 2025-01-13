@@ -119,7 +119,7 @@ sequenceDiagram
     activate Frontend
 
     User ->> Frontend: Click "Create User" button
-    Frontend ->> User: Redirect to create organization form
+    Frontend ->> User: Redirect to create user form
     Frontend ->> Frontend: Validate JWT token
     alt JWT Token Valid
     User ->> Frontend: Provide User information and click submit
@@ -130,7 +130,7 @@ sequenceDiagram
     
     alt JWT Token is Valid
 
-    Backend ->> Database: Create new organization
+    Backend ->> Database: Create new user
     activate Database
 
     alt Email name is unique
