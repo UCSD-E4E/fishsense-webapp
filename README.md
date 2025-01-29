@@ -1,8 +1,5 @@
 # FishSense Web App
 
-## Create User Flow
-TODO
-
 ## Login Flow
 ```mermaid
 sequenceDiagram
