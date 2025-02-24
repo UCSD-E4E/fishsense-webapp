@@ -2,8 +2,30 @@
 
 ## V1 1/28/2025
 
-(have to have deployment ready beforehand)
 (Frame index is always 1 for non videos )
+
+Asumptions:
+Logged in, have deployment ready beforeha d
+
+laser calibration images = (checkerboard or dive slate)
+
+validate jwt token on route changes
+
+backend jwt validation checks with database
+
+laser and lens cal are bunch of matrices
+
+let user validate laser detections
+
+validate fish ORF instead of labeling
+
+ask for dive slate pdf and checkerboard specifications
+
+lens cal will be attached to camera and different flow
+
+done by admin of org? camera associated with org?
+
+POST camera / deployement info?
 
 ```mermaid
 sequenceDiagram
@@ -12,8 +34,11 @@ sequenceDiagram
     activate User
     activate Frontend
     
-    User ->> Frontend: Selects Deployment and presses upload button
-    Frontend ->> User: Prompts user to select folder of checkerboard images
+    User ->> Frontend: Selects Deployment
+    Frontend ->> Frontend: Validate JWT Token 
+    Frontend ->> User: Displays deployment page for user
+    User ->> Frontend: Presses upload button
+    Frontend ->> User: Prompts user to select folder of laser calibration images 
 
     User ->> Frontend: Selects Folder
 
@@ -23,39 +48,17 @@ sequenceDiagram
 
     activate Backend
 
-    Frontend ->> Backend: Post Checkerboard ORFS
-
-    Backend ->> Backend: Validate JWT Token
-
-    Backend ->> Backend: Process checkerboard and output lens_cal.pkg
+    Frontend ->> Backend: Post laser calibration ORFS
 
     activate Database
 
-    Backend ->> Database: Store lens cal metadata in database
+    Backend ->> Database: Validate JWT Token
 
-    Database ->> Backend: Returns id
+    Database ->> Backend: Returns success on validation
 
     deactivate Database
 
-    Backend ->> Frontend: Returns 200 success
-
-    deactivate Backend
-
-    Frontend ->> User: Prompts user to select folder of laser images
-
-    User ->> Frontend: Selects Folder
-
-    Frontend ->> Frontend: Filter out all files except ORF    
-
-    Frontend ->> Frontend: Validate JWT Token
-
-    activate Backend
-
-    Frontend ->> Backend: Post laser ORFS
-
-    Backend ->> Backend: Validate JWT Token
-
-    Backend ->> Backend: Process laser and output laser_cal.pkg
+    Backend ->> Backend: Process laser calibration images and output laser_cals 
 
     activate Database
 
@@ -65,7 +68,29 @@ sequenceDiagram
 
     deactivate Database
 
-    Backend ->> Frontend: Returns 200 success
+    Backend ->> Frontend: Returns 201 created
+
+    deactivate Backend
+
+    Frontend ->> Frontend: Validate JWT token
+
+    Frontend ->> User: Display images and laser_cals for user to validate
+
+    User ->> Frontend: User confirms calibrations are good
+
+    activate Backend
+
+    Frontend ->> Backend: Post validate: True, laser cal id
+
+    activate Database
+
+    Backend ->> Database: Change laser_cal validate parameter from False to True
+
+    Database ->> Backend: Returns success
+
+    deactivate Database
+
+    Backend ->> Frontend: Post 200 success
 
     deactivate Backend
 
@@ -81,11 +106,19 @@ sequenceDiagram
 
     Frontend ->> Backend: Post Fish ORFs
 
-    Backend ->> Backend: Validate JWT Token
+    activate Database
+
+    Backend ->> Database: Validate JWT Token
+
+    Database ->> Backend: Returns success on validation
+
+    deactivate Database
+
+    Backend ->> Backend: Process Fish ORFs
 
     activate Database
 
-    Backend ->> Database: Store Fish ORFs
+    Backend ->> Database: Store Fish ORFs and lengths
 
     Database ->> Backend: Return Fish ORF info in database
 
@@ -93,47 +126,13 @@ sequenceDiagram
 
     Backend ->> Frontend: Return 200 and Fish ORFs information
 
-    Frontend ->> User: Displays Fish ORFs and prompt user to label laser and head tail
+    Frontend ->> User: Displays Fish ORFs and prompt user to validate
 
-    User ->> Frontend: Labels head tail and laser
+    User ->> Frontend: User validates
 
-    Frontend ->> Frontend: Validate JWT Token
+    
 
-    Frontend ->> Backend: Posts head tail and laser coords
-
-    Backend ->> Backend: Validate JWT Token
-
-    activate Database
-
-    Backend ->> Database: Store head tail and laser coords
-
-    Database ->> Backend: Returns head tail and laser coords
-
-    deactivate Database
-
-    Backend ->> Backend: Uses coords and calibration to get fish length
-
-    activate Database
-
-    Backend ->> Database: store Fish length
-    Database ->> Backend: Return Fish length
-
-    deactivate Database
-
-    Backend ->> Frontend: returns 200 success and fish lengths
-
-
-
-
-
-
-
-
-    deactivate Backend
-
-    Frontend ->> User: Displays Fish lengths to user
-
-
+    
  
 
     deactivate Frontend
