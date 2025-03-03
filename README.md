@@ -117,15 +117,11 @@ sequenceDiagram
 
     User ->> Frontend: Click "Create User" button
     Frontend ->> User: Redirect to create user form
-    Frontend ->> Frontend: Validate JWT token
-    alt JWT Token Valid
+
     User ->> Frontend: Provide User information and click submit
     Frontend ->> Backend: Post form user information
     activate Backend
 
-    Backend ->> Backend: Validate JWT token
-    
-    alt JWT Token is Valid
 
     Backend ->> Database: Create new user
     activate Database
@@ -146,19 +142,10 @@ sequenceDiagram
 
     deactivate Database
 
-    else
-    
-    Backend ->> Frontend: Return 401 unauthorized
-    Frontend ->> User: Redirect to login
 
-    end
 
     deactivate Backend
-    else
 
-    Frontend ->> User: Redirect to login page
-
-    end
 
     deactivate Frontend
     deactivate User
