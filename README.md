@@ -118,6 +118,25 @@ sequenceDiagram
     User ->> Frontend: Click "Create User" button
     Frontend ->> User: Redirect to create user form
 
+    User ->> Frontend: Clicks on Google oauth
+    
+    Frontend ->> Google: Redirects to Google Login Page
+    activate Google
+    Google ->> Frontend: Provides oauth token
+    deactivate Google
+
+    Frontend ->> Backend: Post oauth token
+    activate Backend
+
+    activate Database
+    Backend ->> Database: Request user info
+    Database ->> Backend: Return user does not exist
+    deactivate Database
+    Backend ->> Frontend: Return 401 to indicate the user does not exist
+    Frontend ->> User: Redirect to creat user form
+    
+    deactivate Backend
+
     User ->> Frontend: Provide User information and click submit
     Frontend ->> Backend: Post form user information
     activate Backend
