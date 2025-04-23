@@ -164,8 +164,32 @@ sequenceDiagram
 
 
     deactivate Backend
+```
+## S3 Image Grid Flow
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant Backend
+    participant Database
+    participant S3_Bucket as S3 Bucket
+
+    User ->> Frontend: Click Deployment to View Images
+    Frontend ->> Backend: Request File Paths & Metadata
+    Backend ->> Database: Query file_path by deployment_id
+    Database ->> Backend: Return file_path(s)
+
+    Backend ->> S3_Bucket: Retrieve Image Files (using file_path)
+    S3_Bucket -->> Backend: Return Image Files
+
+    Backend ->> Frontend: Send Image Files + Metadata
+    Frontend ->> User: Render Image Grid (10–20 at a time)
+
+    User ->> Frontend: Click Image to Open Modal
+    Frontend ->> User: Navigate Images in Modal
 
 
     deactivate Frontend
+```
     deactivate User
 ```
