@@ -164,6 +164,34 @@ sequenceDiagram
 
 
     deactivate Backend
+```
+
+## Load Images
+```mermaid
+sequenceDiagram
+    actor User
+
+    activate User
+    activate Frontend
+    
+    Frontend ->> FastAPI: Request for image
+    activate FastAPI
+    FastAPI ->> Frontend: Proide image
+    FastAPI ->> Backend: Request image query
+    deactivate FastAPI
+
+    activate Backend
+
+    activate Database
+    Backend ->> Database: Request Image Path
+    Database ->> Backend: Return image path information
+    Backend ->> FastAPI: Return image query
+    
+    deactivate Database
+    
+    deactivate Backend
+
+    
 
 
     deactivate Frontend
